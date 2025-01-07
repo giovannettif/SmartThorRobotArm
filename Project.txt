@@ -1,0 +1,47 @@
+Eight Steps
+
+1. Prompt is created: "Pick up the Pencil"
+
+2. Prompt is processed into a CSV format of object, action, target object, and classification: "Pencil, Pick up, N/A, Picking"
+    Uses NVIDIA NIM API's
+
+3. Object is passed onto CLIPSegmentation to find where the object is in the image.
+    Uses HuggingFace Model CLIPSeg
+
+4. Depth Estimation is Performed on Original Image to create a depth map.
+    Uses HuggingFace Model DepthAnythingV2
+
+5. (Incomplete) Image Segmentation Mask area is applied to Depth Map Estimation to isolate object, with its position still in respect to the camera.
+
+6. Segmented Depth Map is converted to a point cloud.
+    Uses Open3D Library to convert depth map to point cloud
+
+===============
+
+7. This is where Grasp detection would occur. (Still in progress)
+Implementing Inverse Kinematics 
+Grasp Detection with coordinate points
+
+===============
+
+8. (In Progress) Robot Arm uses Inverse Kinematics to move to the position and grab the object.
+
+
+====================
+Completed:
+Robot Arm
+Modified Asgard Software
+Zero-shot image segmentation with CLIPSeg
+Depth Estimation
+CSV Formatting of Prompt
+
+In-Progress:
+Implementing Reinforcement Learning Inverse Kinematics 
+Grasp Detection with coordinate points
+
+
+Although there are existing methods that I could implement for grasp detection using point clouds, I'm more interested in using reinforcement learning to solve both grasp detection and motion planning at the same time.
+By giving the model direct access to the processed camera feed and control over the joints, it will be able to replace inverse kinematics, depth estimation, and grasp detection, altogether.
+Before I begin to work on that, I am currently training a simpler model that takes in the target 3D Coordinates of the gripper, and outputs joint positions.
+
+To train the model, I will generate random 3D target positions for the gripper and use forward kinematics to test the corresponding joint output positions. The model is trained by comparing the predicted joint positions with the actual target position, by calculating a reward that is based on the difference (delta) between the gripper’s predicted position and the target. This allows the model to learn how to predict joint angles that move the gripper to the correct 3D input position.
